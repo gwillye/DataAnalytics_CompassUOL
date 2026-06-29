@@ -2,72 +2,83 @@
 
 ## Introdução
 
-O Spark é uma ferramenta com alta performance de processamento de dados. O Spark é distribuído em cluster. É veloz e escalável, e utiliza dados em HDFS ou Cloud. O Spark copia os dados entre os nós de seu cluster, concedendo uma tolerância a falhas. Pode-se também particionar os dados em nós diferentes, concedendo maior velocidade de processamento e uma alta performance.
-A estrutura do Spark é composta por um Driver, um Manager e um Executer.
-**Driver:** Inicializa o SparkSession, solicita recursos computacionais do Cluster Manager, transforma as operações em DAGs e as distribui pelos executers;
-**Manager:** Gerencia os recursos do cluster. Existem quatro Managers possíveis: *built-in standalone, YARN, Mesos e Kubernetes*;0
-**Executer:** roda em cada nó do cluster executando as tarefas
+O Spark é uma ferramenta com alta performance de processamento de dados. Ele é distribuído em cluster, é veloz e escalável, e trabalha com dados em HDFS ou na nuvem. O Spark copia os dados entre os nós do seu cluster, o que dá uma boa tolerância a falhas. Também é possível particionar os dados em nós diferentes, ganhando mais velocidade de processamento e alta performance.
+
+A estrutura do Spark é composta por três peças: um Driver, um Manager e um Executer.
+
+**Driver:** inicializa o SparkSession, solicita recursos computacionais ao Cluster Manager, transforma as operações em DAGs e as distribui pelos executers.
+
+**Manager:** gerencia os recursos do cluster. Existem quatro Managers possíveis: built-in standalone, YARN, Mesos e Kubernetes.
+
+**Executer:** roda em cada nó do cluster, executando as tarefas.
+
 ![Alt text](Spark-Print-1.png)
 
-**O principal elemento do Spark é o Data Frame.** O data frame é imutável, e cada transformação gera um novo data frame. O processamento de transformação só ocorre quando há uma ação: a **Lazy Evaluation**.
+O principal elemento do Spark é o Data Frame. Ele é imutável, e cada transformação gera um novo data frame. O processamento de uma transformação só acontece quando há uma ação, e é justamente isso que se chama Lazy Evaluation.
+
 ![Alt text](Spark-Print-2.png)
 
-Existem dois tipos de transformação: Narrow e Wide
-**Narrow:** Os dados necessários estão na mesma partição
-**Wide:** Os dados necessários estão em mais de uma partição
+Existem dois tipos de transformação, Narrow e Wide:
 
-Componentes do Spark:
+**Narrow:** os dados necessários estão na mesma partição.
 
-* Job: Tarefa
-* Stage: Divisão do Job
-* Task: Menor unidade de trabalho. Uma por núcleo e por partição.
+**Wide:** os dados necessários estão em mais de uma partição.
 
-**SparkContext:** Conexão transparente com o Cluster
-**SparkSession:** Acesso ao SparkContext
+Os componentes do Spark são:
 
-Você cria um script no pyspark, e o Spark cria uma sessão automaticamente chamada spark
+* Job: a tarefa.
+* Stage: a divisão do Job.
+* Task: a menor unidade de trabalho. Uma por núcleo e por partição.
 
-Na hora de criar uma aplicação spark, é necessário criar um objeto
+Vale separar dois conceitos que costumam confundir:
+
+**SparkContext:** conexão transparente com o cluster.
+
+**SparkSession:** acesso ao SparkContext.
+
+Na prática, você cria um script no pyspark e o Spark cria automaticamente uma sessão chamada spark. E, na hora de criar uma aplicação Spark, é necessário criar um objeto.
 
 ### Formatos de Big Data
 
-Armazéns de Dados Clássicos armazenavam os dados em formatos proprietários, ou seja, qualquer ferramenta que desejasse acessar este dado precisava de um driver.
-Armazéns de Dados Modernos armazenam os dados em formatos abertos, então não é necessário utilizar drivers para acessar estes dados. Estes dados estão desacoplados, binários e compactados.
-Formatos principais de dados para BigData: Parquet, Avro e Orc.
-Estes formatos de dados suportam schemas e podem ser particionados entre discos, fazendo consultas em paralelismo.
-*Parquet* - Colunar, padrão do Spark
-*ORC* - Colunar, padrão do Hive
-*Avro* - Linha
+Os armazéns de dados clássicos guardavam os dados em formatos proprietários, ou seja, qualquer ferramenta que quisesse acessar aquele dado precisava de um driver. Já os armazéns de dados modernos guardam os dados em formatos abertos, então não é preciso usar drivers para acessá-los. Esses dados ficam desacoplados, binários e compactados.
 
-Em geral, ORC é mais eficiente na criação e compressão
-Parquet tem uma performance melhor na consulta, mas exige mais espaço
-O ideal é fazer um benchmark.
+Os formatos principais de dados para Big Data são Parquet, Avro e ORC. Eles suportam schemas e podem ser particionados entre discos, o que permite fazer consultas com paralelismo.
+
+* Parquet: colunar, é o padrão do Spark.
+* ORC: colunar, é o padrão do Hive.
+* Avro: orientado a linha.
+
+Em geral, o ORC é mais eficiente na criação e na compressão. O Parquet tem uma performance melhor na consulta, mas exige mais espaço. O ideal, mesmo, é fazer um benchmark.
 
 ## DataFrames e RDDs
 
 ### RDD: Resilient Distributed Datasets
 
-* Estrutura básica de baixo nível;
-* Dados "imutáveis", distribuídos pelo cluster
-* Em memória;
-* Pode ser persistindo em disco;
-* Tolerante a falha;
-* Operações sobre um RDD criam um novo RDD
-  
-* Estrutura de baixo nível
-* Complexo e verboso
-* Otimização difícil pelo Spark
+Características principais:
 
--> Dataset Distribuído e Resiliente
+* Estrutura básica de baixo nível.
+* Dados "imutáveis", distribuídos pelo cluster.
+* Ficam em memória.
+* Podem ser persistidos em disco.
+* Tolerantes a falha.
+* Operações sobre um RDD criam um novo RDD.
+
+Pontos de atenção:
+
+* É uma estrutura de baixo nível.
+* Complexo e verboso.
+* Otimização difícil pelo Spark.
+
+Em resumo, RDD é um Dataset Distribuído e Resiliente.
 
 ### Dataset e DataFrame
 
-Semelhantes a uma tabela de banco de dados, compatíveis com outros objetos. O Dataset só está disponível em Java.
+São semelhantes a uma tabela de banco de dados e compatíveis com outros objetos. O Dataset só está disponível em Java.
 
 #### Dataframe
 
-* Tabelas com linhas e colunas
-* Imutável
-* Com schema definido
-* Linguagem preservada
-* Colunas podem possuir tipos diferentes
+* Tabelas com linhas e colunas.
+* Imutável.
+* Com schema definido.
+* Linguagem preservada.
+* Colunas podem ter tipos diferentes.
